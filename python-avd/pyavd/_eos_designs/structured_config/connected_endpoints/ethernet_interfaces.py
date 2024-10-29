@@ -176,6 +176,23 @@ class EthernetInterfacesMixin(UtilsMixin):
                 "id": channel_group_id,
                 "mode": port_channel_mode,
             }
+
+            # Update the description to make the port_channel_id usable
+            ethernet_interface["description"] = (
+                self.shared_utils.interface_descriptions.connected_endpoints_ethernet_interface(
+                    InterfaceDescriptionData(
+                        shared_utils=self.shared_utils,
+                        interface=adapter["switch_ports"][node_index],
+                        peer=peer,
+                        peer_interface=peer_interface,
+                        peer_type=connected_endpoint["type"],
+                        description=interface_description,
+                        port_channel_id=channel_group_id,
+                    ),
+                )
+                or None
+            )
+
             if get(adapter, "port_channel.lacp_fallback.mode") == "static":
                 ethernet_interface["lacp_port_priority"] = 8192 if node_index == 0 else 32768
 
