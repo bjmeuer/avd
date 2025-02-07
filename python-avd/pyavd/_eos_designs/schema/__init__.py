@@ -37195,7 +37195,6 @@ class EosDesigns(EosDesignsRootModel):
                                 "peer_interface": {"type": str},
                                 "speed": {"type": str},
                                 "structured_config": {"type": StructuredConfig},
-                                "_custom_data": {"type": dict},
                             }
                             name: str
                             """
@@ -37227,7 +37226,6 @@ class EosDesigns(EosDesignsRootModel):
 
                             Subclass of AvdModel.
                             """
-                            _custom_data: dict[str, Any]
 
                             if TYPE_CHECKING:
 
@@ -37240,7 +37238,6 @@ class EosDesigns(EosDesignsRootModel):
                                     peer_interface: str | None | UndefinedType = Undefined,
                                     speed: str | None | UndefinedType = Undefined,
                                     structured_config: StructuredConfig | UndefinedType = Undefined,
-                                    _custom_data: dict[str, Any] | UndefinedType = Undefined,
                                 ) -> None:
                                     """
                                     MemberInterfacesItem.
@@ -37268,7 +37265,6 @@ class EosDesigns(EosDesignsRootModel):
                                            Custom structured config for the member ethernet interface.
 
                                            Subclass of AvdModel.
-                                        _custom_data: _custom_data
 
                                     """
 
@@ -37290,18 +37286,12 @@ class EosDesigns(EosDesignsRootModel):
                             class MessageDigestKeysItem(AvdModel):
                                 """Subclass of AvdModel."""
 
-                                _fields: ClassVar[dict] = {
-                                    "id": {"type": int},
-                                    "hash_algorithm": {"type": str, "default": "sha512"},
-                                    "key": {"type": str},
-                                    "_custom_data": {"type": dict},
-                                }
+                                _fields: ClassVar[dict] = {"id": {"type": int}, "hash_algorithm": {"type": str, "default": "sha512"}, "key": {"type": str}}
                                 id: int | None
                                 hash_algorithm: Literal["md5", "sha1", "sha256", "sha384", "sha512"]
                                 """Default value: `"sha512"`"""
                                 key: str | None
                                 """Key password."""
-                                _custom_data: dict[str, Any]
 
                                 if TYPE_CHECKING:
 
@@ -37311,7 +37301,6 @@ class EosDesigns(EosDesignsRootModel):
                                         id: int | None | UndefinedType = Undefined,
                                         hash_algorithm: Literal["md5", "sha1", "sha256", "sha384", "sha512"] | UndefinedType = Undefined,
                                         key: str | None | UndefinedType = Undefined,
-                                        _custom_data: dict[str, Any] | UndefinedType = Undefined,
                                     ) -> None:
                                         """
                                         MessageDigestKeysItem.
@@ -37323,7 +37312,6 @@ class EosDesigns(EosDesignsRootModel):
                                             id: id
                                             hash_algorithm: hash_algorithm
                                             key: Key password.
-                                            _custom_data: _custom_data
 
                                         """
 
@@ -37340,7 +37328,6 @@ class EosDesigns(EosDesignsRootModel):
                                 "authentication": {"type": str},
                                 "simple_auth_key": {"type": str},
                                 "message_digest_keys": {"type": MessageDigestKeys},
-                                "_custom_data": {"type": dict},
                             }
                             enabled: bool | None
                             point_to_point: bool
@@ -37358,7 +37345,6 @@ class EosDesigns(EosDesignsRootModel):
                             """Password used with simple authentication."""
                             message_digest_keys: MessageDigestKeys
                             """Subclass of AvdList with `MessageDigestKeysItem` items."""
-                            _custom_data: dict[str, Any]
 
                             if TYPE_CHECKING:
 
@@ -37372,7 +37358,6 @@ class EosDesigns(EosDesignsRootModel):
                                     authentication: Literal["simple", "message-digest"] | None | UndefinedType = Undefined,
                                     simple_auth_key: str | None | UndefinedType = Undefined,
                                     message_digest_keys: MessageDigestKeys | UndefinedType = Undefined,
-                                    _custom_data: dict[str, Any] | UndefinedType = Undefined,
                                 ) -> None:
                                     """
                                     Ospf.
@@ -37388,28 +37373,20 @@ class EosDesigns(EosDesignsRootModel):
                                         authentication: authentication
                                         simple_auth_key: Password used with simple authentication.
                                         message_digest_keys: Subclass of AvdList with `MessageDigestKeysItem` items.
-                                        _custom_data: _custom_data
 
                                     """
 
                         class FlowTracking(AvdModel):
                             """Subclass of AvdModel."""
 
-                            _fields: ClassVar[dict] = {"enabled": {"type": bool}, "name": {"type": str}, "_custom_data": {"type": dict}}
+                            _fields: ClassVar[dict] = {"enabled": {"type": bool}, "name": {"type": str}}
                             enabled: bool | None
                             name: str | None
                             """Flow tracker name as defined in flow_tracking_settings."""
-                            _custom_data: dict[str, Any]
 
                             if TYPE_CHECKING:
 
-                                def __init__(
-                                    self,
-                                    *,
-                                    enabled: bool | None | UndefinedType = Undefined,
-                                    name: str | None | UndefinedType = Undefined,
-                                    _custom_data: dict[str, Any] | UndefinedType = Undefined,
-                                ) -> None:
+                                def __init__(self, *, enabled: bool | None | UndefinedType = Undefined, name: str | None | UndefinedType = Undefined) -> None:
                                     """
                                     FlowTracking.
 
@@ -37419,7 +37396,6 @@ class EosDesigns(EosDesignsRootModel):
                                     Args:
                                         enabled: enabled
                                         name: Flow tracker name as defined in flow_tracking_settings.
-                                        _custom_data: _custom_data
 
                                     """
 
@@ -37446,7 +37422,6 @@ class EosDesigns(EosDesignsRootModel):
                             "flow_tracking": {"type": FlowTracking},
                             "structured_config": {"type": StructuredConfig},
                             "raw_eos_cli": {"type": str},
-                            "_custom_data": {"type": dict},
                         }
                         name: str
                         """
@@ -37531,7 +37506,6 @@ class EosDesigns(EosDesignsRootModel):
                         """
                         raw_eos_cli: str | None
                         """EOS CLI rendered directly on the Port-Channel interface in the final EOS configuration."""
-                        _custom_data: dict[str, Any]
 
                         if TYPE_CHECKING:
 
@@ -37557,7 +37531,6 @@ class EosDesigns(EosDesignsRootModel):
                                 flow_tracking: FlowTracking | UndefinedType = Undefined,
                                 structured_config: StructuredConfig | UndefinedType = Undefined,
                                 raw_eos_cli: str | None | UndefinedType = Undefined,
-                                _custom_data: dict[str, Any] | UndefinedType = Undefined,
                             ) -> None:
                                 """
                                 L3PortChannelsItem.
@@ -37615,7 +37588,6 @@ class EosDesigns(EosDesignsRootModel):
 
                                        Subclass of AvdModel.
                                     raw_eos_cli: EOS CLI rendered directly on the Port-Channel interface in the final EOS configuration.
-                                    _custom_data: _custom_data
 
                                 """
 

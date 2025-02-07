@@ -513,6 +513,8 @@ class UtilsMixin(Protocol):
                     interface["ospf_message_digest_keys"] = ospf_keys
 
         ip_address = None
+        if l3_port_channel.ip_address:
+            ip_address = l3_port_channel.ip_address
         if l3_port_channel.ip_addresses:
             ip_address = l3_port_channel.ip_addresses[node_index]
         if ip_address:
