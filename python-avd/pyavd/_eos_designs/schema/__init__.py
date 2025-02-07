@@ -39886,6 +39886,16 @@ class EosDesigns(EosDesignsRootModel):
                     class L3PortChannelsItem(AvdModel):
                         """Subclass of AvdModel."""
 
+                        class Nodes(AvdList[str]):
+                            """Subclass of AvdList with `str` items."""
+
+                        Nodes._item_type = str
+
+                        class Descriptions(AvdList[str]):
+                            """Subclass of AvdList with `str` items."""
+
+                        Descriptions._item_type = str
+
                         class MemberInterfacesItem(AvdModel):
                             """Subclass of AvdModel."""
 
@@ -39983,10 +39993,10 @@ class EosDesigns(EosDesignsRootModel):
 
                         MemberInterfaces._item_type = MemberInterfacesItem
 
-                        class Nodes(AvdList[str]):
+                        class IpAddresses(AvdList[str]):
                             """Subclass of AvdList with `str` items."""
 
-                        Nodes._item_type = str
+                        IpAddresses._item_type = str
 
                         class Ospf(AvdModel):
                             """Subclass of AvdModel."""
@@ -40096,30 +40106,6 @@ class EosDesigns(EosDesignsRootModel):
 
                                     """
 
-                        class Pim(AvdModel):
-                            """Subclass of AvdModel."""
-
-                            _fields: ClassVar[dict] = {"enabled": {"type": bool}, "_custom_data": {"type": dict}}
-                            enabled: bool | None
-                            _custom_data: dict[str, Any]
-
-                            if TYPE_CHECKING:
-
-                                def __init__(
-                                    self, *, enabled: bool | None | UndefinedType = Undefined, _custom_data: dict[str, Any] | UndefinedType = Undefined
-                                ) -> None:
-                                    """
-                                    Pim.
-
-
-                                    Subclass of AvdModel.
-
-                                    Args:
-                                        enabled: enabled
-                                        _custom_data: _custom_data
-
-                                    """
-
                         class FlowTracking(AvdModel):
                             """Subclass of AvdModel."""
 
@@ -40156,20 +40142,21 @@ class EosDesigns(EosDesignsRootModel):
 
                         _fields: ClassVar[dict] = {
                             "name": {"type": str},
+                            "nodes": {"type": Nodes},
                             "description": {"type": str},
+                            "descriptions": {"type": Descriptions},
                             "mode": {"type": str, "default": "active"},
                             "member_interfaces": {"type": MemberInterfaces},
                             "ip_address": {"type": str},
+                            "ip_addresses": {"type": IpAddresses},
                             "encapsulation_dot1q_vlan": {"type": int},
                             "enabled": {"type": bool, "default": True},
                             "peer": {"type": str},
                             "peer_port_channel": {"type": str},
-                            "nodes": {"type": Nodes},
                             "mtu": {"type": int},
                             "ipv4_acl_in": {"type": str},
                             "ipv4_acl_out": {"type": str},
                             "ospf": {"type": Ospf},
-                            "pim": {"type": Pim},
                             "flow_tracking": {"type": FlowTracking},
                             "structured_config": {"type": StructuredConfig},
                             "raw_eos_cli": {"type": str},
@@ -40181,11 +40168,20 @@ class EosDesigns(EosDesignsRootModel):
                         For a
                         Port-Channel subinterface, the parent Port-Channel interface must be defined as well.
                         """
+                        nodes: Nodes
+                        """Subclass of AvdList with `str` items."""
                         description: str | None
                         """
                         Interface description.
                         If not set, a default description will be configured with '[<peer>[
                         <peer_port_channel>]]'.
+                        """
+                        descriptions: Descriptions
+                        """
+                        "descriptions" has precedence over "description".
+
+
+                        Subclass of AvdList with `str` items.
                         """
                         mode: Literal["active", "passive", "on"]
                         """
@@ -40204,6 +40200,8 @@ class EosDesigns(EosDesignsRootModel):
                         """
                         ip_address: str | None
                         """IPv4 address/Mask."""
+                        ip_addresses: IpAddresses
+                        """Subclass of AvdList with `str` items."""
                         encapsulation_dot1q_vlan: int | None
                         """
                         For subinterfaces the dot1q vlan is derived from the interface name by default, but can also be
@@ -40219,8 +40217,6 @@ class EosDesigns(EosDesignsRootModel):
                         """The peer device name. Used for description and documentation."""
                         peer_port_channel: str | None
                         """The peer device port-channel interface. Used for description and documentation."""
-                        nodes: Nodes
-                        """Subclass of AvdList with `str` items."""
                         mtu: int | None
                         """MTU can only be set on the parent Port-Channel."""
                         ipv4_acl_in: str | None
@@ -40232,18 +40228,6 @@ class EosDesigns(EosDesignsRootModel):
                         OSPF interface configuration.
 
                         Subclass of AvdModel.
-                        """
-                        pim: Pim
-                        """
-                        Enable PIM sparse-mode on the interface; requires "evpn_l3_multicast" to be enabled on the
-                        VRF/Tenant.
-                        Enabling this implicitly makes the device a PIM External Gateway (PEG) in EVPN designs
-                        only.
-                        At least one RP address must be configured for EVPN PEG to be configured.
-
-
-                        Subclass of
-                        AvdModel.
                         """
                         flow_tracking: FlowTracking
                         """
@@ -40269,20 +40253,21 @@ class EosDesigns(EosDesignsRootModel):
                                 self,
                                 *,
                                 name: str | UndefinedType = Undefined,
+                                nodes: Nodes | UndefinedType = Undefined,
                                 description: str | None | UndefinedType = Undefined,
+                                descriptions: Descriptions | UndefinedType = Undefined,
                                 mode: Literal["active", "passive", "on"] | UndefinedType = Undefined,
                                 member_interfaces: MemberInterfaces | UndefinedType = Undefined,
                                 ip_address: str | None | UndefinedType = Undefined,
+                                ip_addresses: IpAddresses | UndefinedType = Undefined,
                                 encapsulation_dot1q_vlan: int | None | UndefinedType = Undefined,
                                 enabled: bool | UndefinedType = Undefined,
                                 peer: str | None | UndefinedType = Undefined,
                                 peer_port_channel: str | None | UndefinedType = Undefined,
-                                nodes: Nodes | UndefinedType = Undefined,
                                 mtu: int | None | UndefinedType = Undefined,
                                 ipv4_acl_in: str | None | UndefinedType = Undefined,
                                 ipv4_acl_out: str | None | UndefinedType = Undefined,
                                 ospf: Ospf | UndefinedType = Undefined,
-                                pim: Pim | UndefinedType = Undefined,
                                 flow_tracking: FlowTracking | UndefinedType = Undefined,
                                 structured_config: StructuredConfig | UndefinedType = Undefined,
                                 raw_eos_cli: str | None | UndefinedType = Undefined,
@@ -40299,10 +40284,16 @@ class EosDesigns(EosDesignsRootModel):
                                        Port-Channel interface name like 'Port-Channel2' or subinterface name like 'Port-Channel2.42'.
                                        For a
                                        Port-Channel subinterface, the parent Port-Channel interface must be defined as well.
+                                    nodes: Subclass of AvdList with `str` items.
                                     description:
                                        Interface description.
                                        If not set, a default description will be configured with '[<peer>[
                                        <peer_port_channel>]]'.
+                                    descriptions:
+                                       "descriptions" has precedence over "description".
+
+
+                                       Subclass of AvdList with `str` items.
                                     mode:
                                        Port-Channel mode.
                                        Should not be set on Port-Channel subinterfaces.
@@ -40313,13 +40304,13 @@ class EosDesigns(EosDesignsRootModel):
                                        Subclass of
                                        AvdIndexedList with `MemberInterfacesItem` items. Primary key is `name` (`str`).
                                     ip_address: IPv4 address/Mask.
+                                    ip_addresses: Subclass of AvdList with `str` items.
                                     encapsulation_dot1q_vlan:
                                        For subinterfaces the dot1q vlan is derived from the interface name by default, but can also be
                                        specified.
                                     enabled: Enable or Shutdown the interface.
                                     peer: The peer device name. Used for description and documentation.
                                     peer_port_channel: The peer device port-channel interface. Used for description and documentation.
-                                    nodes: Subclass of AvdList with `str` items.
                                     mtu: MTU can only be set on the parent Port-Channel.
                                     ipv4_acl_in: Name of the IPv4 access-list to be assigned in the ingress direction.
                                     ipv4_acl_out: Name of the IPv4 Access-list to be assigned in the egress direction.
@@ -40327,16 +40318,6 @@ class EosDesigns(EosDesignsRootModel):
                                        OSPF interface configuration.
 
                                        Subclass of AvdModel.
-                                    pim:
-                                       Enable PIM sparse-mode on the interface; requires "evpn_l3_multicast" to be enabled on the
-                                       VRF/Tenant.
-                                       Enabling this implicitly makes the device a PIM External Gateway (PEG) in EVPN designs
-                                       only.
-                                       At least one RP address must be configured for EVPN PEG to be configured.
-
-
-                                       Subclass of
-                                       AvdModel.
                                     flow_tracking:
                                        Configures flow-tracking on the interface. Overrides `fabric_flow_tracking.l3_port_channels`
                                        setting.

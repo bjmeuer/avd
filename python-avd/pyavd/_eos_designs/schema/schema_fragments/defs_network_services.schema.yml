@@ -841,11 +841,23 @@ $defs:
                         Port-Channel interface name like 'Port-Channel2' or subinterface name like 'Port-Channel2.42'.
                         For a Port-Channel subinterface, the parent Port-Channel interface must be defined as well.
                       pattern: "Port-Channel[\\d/]+(\\.[\\d]+)?"
+                    nodes:
+                      type: list
+                      required: true
+                      items:
+                        type: str
+                        description: Node.
                     description:
                       type: str
                       description: |-
                         Interface description.
                         If not set, a default description will be configured with '[<peer>[ <peer_port_channel>]]'.
+                    descriptions:
+                      type: list
+                      items:
+                        type: str
+                      description: |
+                        "descriptions" has precedence over "description".
                     mode:
                       type: str
                       description: |-
@@ -900,6 +912,11 @@ $defs:
                     ip_address:
                       type: str
                       description: IPv4 address/Mask.
+                    ip_addresses:
+                      type: list
+                      items:
+                        type: str
+                        description: IPv4_address/Mask.
                     encapsulation_dot1q_vlan:
                       description: For subinterfaces the dot1q vlan is derived from the interface name by default, but can also be specified.
                       type: int
@@ -919,11 +936,6 @@ $defs:
                       type: str
                       description: |-
                         The peer device port-channel interface. Used for description and documentation.
-                    nodes:
-                      type: list
-                      items:
-                        type: str
-                        description: Node.
                     mtu:
                       type: int
                       convert_types:
@@ -990,15 +1002,6 @@ $defs:
                               key:
                                 type: str
                                 description: Key password.
-                    pim:
-                      type: dict
-                      description: |
-                        Enable PIM sparse-mode on the interface; requires "evpn_l3_multicast" to be enabled on the VRF/Tenant.
-                        Enabling this implicitly makes the device a PIM External Gateway (PEG) in EVPN designs only.
-                        At least one RP address must be configured for EVPN PEG to be configured.
-                      keys:
-                        enabled:
-                          type: bool
                     flow_tracking:
                       type: dict
                       $ref: "eos_designs#/$defs/flow_tracking_link"
