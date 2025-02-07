@@ -6340,7 +6340,8 @@ $defs:
           type: list
           primary_key: name
           description: 'VRFs will only be configured on a node if any of the underlying
-            objects like `svis` or `l3_interfaces` apply to the node.
+            objects like `svis`, `l3_interfaces` or `l3_port_channels` apply to the
+            node.
 
 
             It is recommended to only define a VRF in one Tenant. If the same VRF

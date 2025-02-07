@@ -43180,16 +43180,14 @@ class EosDesigns(EosDesignsRootModel):
                 """
                 vrfs: Vrfs
                 """
-                VRFs will only be configured on a node if any of the underlying objects like `svis` or
-                `l3_interfaces` apply to the node.
+                VRFs will only be configured on a node if any of the underlying objects like `svis`, `l3_interfaces`
+                or `l3_port_channels` apply to the node.
 
-                It is recommended to only define a VRF in one Tenant. If the
-                same VRF name is used across multiple tenants and those tenants
-                are accepted by `filter.tenants` on
-                the node, any object set under the duplicate VRFs must either be unique or be an exact match.
-
-                VRF
-                "default" is partially supported under network-services. Currently the supported options for
+                It is recommended to only define a VRF in one Tenant. If
+                the same VRF name is used across multiple tenants and those tenants
+                are accepted by `filter.tenants`
+                on the node, any object set under the duplicate VRFs must either be unique or be an exact match.
+                VRF "default" is partially supported under network-services. Currently the supported options for
                 "default" vrf are route-target,
                 route-distinguisher settings, structured_config, raw_eos_cli in bgp
                 and SVIs are the only supported interface type.
@@ -43370,16 +43368,14 @@ class EosDesigns(EosDesignsRootModel):
                                Subclass of AvdModel.
                             evpn_l2_multi_domain: Explicitly extend all VLANs/VLAN-Aware Bundles inside the tenant to remote EVPN domains.
                             vrfs:
-                               VRFs will only be configured on a node if any of the underlying objects like `svis` or
-                               `l3_interfaces` apply to the node.
+                               VRFs will only be configured on a node if any of the underlying objects like `svis`, `l3_interfaces`
+                               or `l3_port_channels` apply to the node.
 
-                               It is recommended to only define a VRF in one Tenant. If the
-                               same VRF name is used across multiple tenants and those tenants
-                               are accepted by `filter.tenants` on
-                               the node, any object set under the duplicate VRFs must either be unique or be an exact match.
-
-                               VRF
-                               "default" is partially supported under network-services. Currently the supported options for
+                               It is recommended to only define a VRF in one Tenant. If
+                               the same VRF name is used across multiple tenants and those tenants
+                               are accepted by `filter.tenants`
+                               on the node, any object set under the duplicate VRFs must either be unique or be an exact match.
+                               VRF "default" is partially supported under network-services. Currently the supported options for
                                "default" vrf are route-target,
                                route-distinguisher settings, structured_config, raw_eos_cli in bgp
                                and SVIs are the only supported interface type.

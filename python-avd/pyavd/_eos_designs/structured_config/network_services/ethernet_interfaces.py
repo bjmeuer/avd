@@ -166,6 +166,22 @@ class EthernetInterfacesMixin(Protocol):
                                 context_keys=["name", "vrf"],
                             )
 
+                    # Member ethernet ports for Port-Channel interface
+                    for l3_port_channel in vrf.l3_port_channels:
+                        # sub-interface for l3_port_channel cannot have member eth ports
+                        # skip any logic to generate member port config for such sub-interfaces
+                        if "." in l3_port_channel.name:
+                            continue
+                        member_eth_intfs = self._get_l3_port_channel_member_ports_cfg(l3_port_channel)
+                        for member_eth_intf in member_eth_intfs:
+                            append_if_not_duplicate(
+                                list_of_dicts=ethernet_interfaces,
+                                primary_key="name",
+                                new_dict=member_eth_intf,
+                                context=f"Ethernet interface defined under 'member_interfaces' for {self.shared_utils.node_type_key_data.key} l3_port_channels",
+                                context_keys=["name", "peer", "peer_interface"],
+                            )
+
         if self.shared_utils.network_services_l1:
             for tenant in self.shared_utils.filtered_tenants:
                 if not tenant.point_to_point_services:

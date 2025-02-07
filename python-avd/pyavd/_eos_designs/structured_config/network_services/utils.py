@@ -9,7 +9,8 @@ from re import fullmatch as re_fullmatch
 from typing import TYPE_CHECKING, Protocol
 
 from pyavd._errors import AristaAvdError, AristaAvdInvalidInputsError
-from pyavd._utils import default, get, get_ip_from_ip_prefix
+from pyavd._utils import default, get, get_ip_from_ip_prefix, strip_empties_from_dict
+from pyavd.api.interface_descriptions import InterfaceDescriptionData
 from pyavd.j2filters import natural_sort
 
 if TYPE_CHECKING:
@@ -444,3 +445,45 @@ class UtilsMixin(Protocol):
 
         # Default to the specified router ID
         return router_id
+
+    # only being called for l3_port_channel which is not a sub-interface
+    def _get_l3_port_channel_member_ports_cfg(
+        self: AvdStructuredConfigNetworkServicesProtocol,
+        l3_port_channel: EosDesigns._DynamicKeys.DynamicNetworkServicesItem.NetworkServicesItem.L3PortChannelsItem,
+    ) -> list:
+        """Returns structured_configuration (list of ethernet interfaces) representing member ports for one L3 Port-Channel."""
+        ethernet_interfaces = []
+        channel_group_id = l3_port_channel.name.split("Port-Channel")[-1]
+        for member_intf in l3_port_channel.member_interfaces:
+            interface_description = member_intf.description
+            # derive values for peer from parent L3 port-channel
+            # if not defined explicitly for member interface
+            peer = member_intf.peer if member_intf.peer else l3_port_channel.peer
+            if not interface_description:
+                interface_description = self.shared_utils.interface_descriptions.underlay_ethernet_interface(
+                    InterfaceDescriptionData(
+                        shared_utils=self.shared_utils,
+                        interface=member_intf.name,
+                        peer=peer,
+                        peer_interface=member_intf.peer_interface,
+                    ),
+                )
+            ethernet_interface = {
+                "name": member_intf.name,
+                "description": interface_description,
+                "peer_type": "l3_port_channel_member",
+                "peer": peer,
+                "peer_interface": member_intf.peer_interface,
+                "shutdown": not l3_port_channel.enabled,
+                "speed": member_intf.speed if member_intf.speed else None,
+                "channel_group": {
+                    "id": int(channel_group_id),
+                    "mode": l3_port_channel.mode,
+                },
+            }
+            if member_intf.structured_config:
+                self.custom_structured_configs.nested.ethernet_interfaces.obtain(member_intf.name)._deepmerge(
+                    member_intf.structured_config, list_merge=self.custom_structured_configs.list_merge_strategy
+                )
+            ethernet_interfaces.append(strip_empties_from_dict(ethernet_interface))
+        return ethernet_interfaces
