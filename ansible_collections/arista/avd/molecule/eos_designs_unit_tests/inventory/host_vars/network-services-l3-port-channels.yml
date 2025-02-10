@@ -1,0 +1,46 @@
+---
+# This yml file is being used to test the various supported schema attributes for L3 Port-Channel
+# for cv-pathfinder deployment use-case.
+type: l3leaf
+l3leaf:
+  defaults:
+    loopback_ipv4_pool: 192.168.255.0/24
+    loopback_ipv4_offset: 8
+    vtep_loopback_ipv4_pool: 192.168.254.0/24
+    virtual_router_mac_address: 00:dc:00:00:00:0a
+  nodes:
+    - name: network-services-l3-port-channels
+      id: 101
+      bgp_as: 101
+
+tenants:
+  - name: L3PO
+    mac_vrf_vni_base: 10000
+    vrfs:
+      - name: TESTING
+        vrf_id: 1
+        l3_port_channels:
+          - name: Port-Channel1111
+            mode: active
+            mtu: 1555
+            descriptions:
+              - Test NetworkService Port-Channel
+            peer: inet-cloud
+            peer_port_channel: Po1111
+            enabled: true
+            nodes:
+              - network-services-l3-port-channels
+            member_interfaces:
+              - name: Ethernet4
+                peer_interface: Ethernet8
+              - name: Ethernet5
+                peer_interface: Ethernet9
+          - name: Port-Channel1111.100
+            description: Test NetworkService Port-Channel
+            peer: inet-cloud
+            peer_port_channel: Po1111.100
+            enabled: true
+            ip_addresses:
+              - 1.1.1.2/29
+            nodes:
+              - network-services-l3-port-channels

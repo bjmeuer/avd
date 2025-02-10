@@ -424,7 +424,7 @@ class UtilsMixin(Protocol):
     # only being called for l3_port_channel which is not a sub-interface
     def _get_l3_port_channel_member_ports_cfg(
         self: AvdStructuredConfigNetworkServicesProtocol,
-        l3_port_channel: EosDesigns._DynamicKeys.DynamicNetworkServicesItem.NetworkServicesItem.L3PortChannelsItem,
+        l3_port_channel: EosDesigns._DynamicKeys.DynamicNetworkServicesItem.NetworkServicesItem.VrfsItem.L3PortChannelsItem,
     ) -> list:
         """Returns structured_configuration (list of ethernet interfaces) representing member ports for one L3 Port-Channel."""
         ethernet_interfaces = []
@@ -523,7 +523,7 @@ class UtilsMixin(Protocol):
         is_subinterface = "." in l3_port_channel.name
         if is_subinterface:
             interface["encapsulation_dot1q"] = {"vlan": default(l3_port_channel.encapsulation_dot1q_vlan, int(l3_port_channel.name.split(".", maxsplit=1)[-1]))}
-            if not l3_port_channel.ip_address:
+            if not ip_address:
                 msg = f"{self.shared_utils.node_type_key_data.key}.nodes[name={self.shared_utils.hostname}].{node_type_in_schema}"
                 msg += f"[name={l3_port_channel.name}].ip_address"
                 raise AristaAvdMissingVariableError(msg)
