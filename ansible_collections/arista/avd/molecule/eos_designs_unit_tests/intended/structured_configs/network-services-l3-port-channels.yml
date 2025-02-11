@@ -249,6 +249,9 @@ router_ospf:
     vrf: TESTING
     passive_interface_default: true
     router_id: 192.168.255.109
+    no_passive_interfaces:
+    - Port-Channel1111.100
+    - Port-Channel1111.200
     redistribute:
       bgp:
         enabled: true
