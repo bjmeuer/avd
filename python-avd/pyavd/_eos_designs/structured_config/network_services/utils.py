@@ -481,10 +481,12 @@ class UtilsMixin(Protocol):
             "switchport": {"enabled": False if "." not in l3_port_channel.name else None},
             "eos_cli": l3_port_channel.raw_eos_cli,
             "flow_tracker": self.shared_utils.get_flow_tracker(l3_port_channel.flow_tracking),
+            "access_group_in": l3_port_channel.ipv4_acl_in if l3_port_channel.ipv4_acl_in else None,
+            "access_group_out": l3_port_channel.ipv4_acl_out if l3_port_channel.ipv4_acl_out else None,
+            "vrf": vrf_name if vrf_name != "default" else None,
+            "peer_type": "l3_port_channel",
+            "peer_interface": l3_port_channel.peer_port_channel if l3_port_channel.peer_port_channel else None,
         }
-
-        if vrf_name != "default":
-            interface["vrf"] = vrf_name
 
         if l3_port_channel.ospf.enabled and vrf_ospf_enabled:
             interface["ospf_area"] = l3_port_channel.ospf.area
@@ -528,13 +530,11 @@ class UtilsMixin(Protocol):
                 msg += f"[name={l3_port_channel.name}].ip_address"
                 raise AristaAvdMissingVariableError(msg)
 
-        interface_description = (
-            l3_port_channel.description
-            if not isinstance(node_index, int)
-            else l3_port_channel.descriptions[node_index]
-            if l3_port_channel.descriptions
-            else None
-        )
+        interface_description = None
+        if l3_port_channel.description:
+            interface_description = l3_port_channel.description
+        if l3_port_channel.descriptions:
+            interface_description = l3_port_channel.descriptions[node_index]
         if not interface_description:
             interface_description = self.shared_utils.interface_descriptions.underlay_port_channel_interface(
                 InterfaceDescriptionData(
@@ -545,21 +545,10 @@ class UtilsMixin(Protocol):
                 ),
             )
         interface["description"] = interface_description
-        interface["peer_type"] = "l3_port_channel"
-        interface["peer_interface"] = l3_port_channel.peer_port_channel
-        # speed is not applicable for port-channel, hence not set
 
         if l3_port_channel.structured_config:
             self.custom_structured_configs.nested.port_channel_interfaces.obtain(l3_port_channel.name)._deepmerge(
                 l3_port_channel.structured_config, list_merge=self.custom_structured_configs.list_merge_strategy
-            )
-
-        if self._l3_interface_acls is not None:
-            interface.update(
-                {
-                    "access_group_in": get(self._l3_interface_acls, f"{l3_port_channel.name}..ipv4_acl_in..name", separator=".."),
-                    "access_group_out": get(self._l3_interface_acls, f"{l3_port_channel.name}..ipv4_acl_out..name", separator=".."),
-                },
             )
 
         return strip_empties_from_dict(interface)

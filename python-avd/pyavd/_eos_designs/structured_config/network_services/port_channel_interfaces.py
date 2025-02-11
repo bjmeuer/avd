@@ -84,6 +84,10 @@ class PortChannelInterfacesMixin(Protocol):
                             # implies 'mtu' is set when not applicable for a sub-interface
                             msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'mtu' set. This is not a valid setting."
                             raise AristaAvdInvalidInputsError(msg)
+                        if l3_port_channel._get("mlag"):
+                            # implies 'mlag' is set when not applicable for a sub-interface
+                            msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'mlag' set. This is not a valid setting."
+                            raise AristaAvdInvalidInputsError(msg)
 
                 for node_name in node_names:
                     # Sanity check if there are any sub-interfaces for which parent Port-channel is not explicitly specified
