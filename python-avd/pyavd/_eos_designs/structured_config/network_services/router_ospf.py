@@ -108,10 +108,7 @@ class RouterOspfMixin(Protocol):
 
         for l3_port_channel in vrf.l3_port_channels:
             if l3_port_channel.ospf.enabled:
-                for _node_index, node in enumerate(l3_port_channel.nodes):
-                    if node != self.shared_utils.hostname:
-                        continue
-                    process.no_passive_interfaces.append(l3_port_channel.name)
+                process.no_passive_interfaces.append(l3_port_channel.name)
 
         for svi in vrf.svis:
             if svi.ospf.enabled:

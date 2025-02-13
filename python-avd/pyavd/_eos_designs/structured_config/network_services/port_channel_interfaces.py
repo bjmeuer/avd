@@ -40,59 +40,47 @@ class PortChannelInterfacesMixin(Protocol):
             for vrf in tenant.vrfs:
                 # The l3_port_channel has already been filtered in filtered_tenants
                 # to only contain entries with our hostname
-                subif_parent_port_channel_names = {}
-                regular_l3_port_channel_names = {}
-                node_names = set()
+                subif_parent_port_channel_names = set()
+                regular_l3_port_channel_names = set()
                 for l3_port_channel in vrf.l3_port_channels:
-                    for _node_index, node_name in enumerate(l3_port_channel.nodes):
-                        if node_name != self.shared_utils.hostname:
-                            continue
+                    interface_name = l3_port_channel.name
+                    is_subinterface = "." in interface_name
 
-                        if node_name not in subif_parent_port_channel_names:
-                            subif_parent_port_channel_names[node_name] = set()
-                        if node_name not in regular_l3_port_channel_names:
-                            regular_l3_port_channel_names[node_name] = set()
-                        node_names.add(node_name)
+                    nodes_length = len(l3_port_channel.nodes)
+                    if (l3_port_channel.ip_addresses and len(l3_port_channel.ip_addresses) != nodes_length) or (
+                        l3_port_channel.descriptions and len(l3_port_channel.descriptions) != nodes_length
+                    ):
+                        msg = f"Length of lists, 'nodes', 'ip_addresses' and 'descriptions' must match for l3_port_channels for {vrf.name} in {tenant.name}"
+                        raise AristaAvdError(msg)
 
-                        interface_name = l3_port_channel.name
-                        is_subinterface = "." in interface_name
-
-                        nodes_length = len(l3_port_channel.nodes)
-                        if (l3_port_channel.ip_addresses and len(l3_port_channel.ip_addresses) != nodes_length) or (
-                            l3_port_channel.descriptions and len(l3_port_channel.descriptions) != nodes_length
-                        ):
-                            msg = f"Length of lists, 'nodes', 'ip_addresses' and 'descriptions' must match for l3_port_channels for {vrf.name} in {tenant.name}"
-                            raise AristaAvdError(msg)
-
-                        if not is_subinterface:
-                            # This is a regular Port-Channel (not sub-interface)
-                            regular_l3_port_channel_names[node_name].add(interface_name)
-                            continue
-                        # This is a subinterface for a port-channel interface.
-                        # We need to ensure that parent port-channel interface is also included explicitly
-                        # within list of Port-Channel interfaces.
-                        parent_port_channel_name = interface_name.split(".", maxsplit=1)[0]
-                        subif_parent_port_channel_names[node_name].add(parent_port_channel_name)
-                        if l3_port_channel.member_interfaces:
-                            msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'member_interfaces' set. This is not a valid setting."
-                            raise AristaAvdInvalidInputsError(msg)
-                        if l3_port_channel._get("mode"):
-                            # implies 'mode' is set when not applicable for a sub-interface
-                            msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'mode' set. This is not a valid setting."
-                            raise AristaAvdInvalidInputsError(msg)
-                        if l3_port_channel._get("mtu"):
-                            # implies 'mtu' is set when not applicable for a sub-interface
-                            msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'mtu' set. This is not a valid setting."
-                            raise AristaAvdInvalidInputsError(msg)
-
-                for node_name in node_names:
-                    # Sanity check if there are any sub-interfaces for which parent Port-channel is not explicitly specified
-                    if missing_parent_port_channels := subif_parent_port_channel_names[node_name].difference(regular_l3_port_channel_names[node_name]):
-                        msg = (
-                            f"One or more L3 Port-Channels '{', '.join(natural_sort(missing_parent_port_channels))}' "
-                            "need to be specified as they have sub-interfaces referencing them."
-                        )
+                    if not is_subinterface:
+                        # This is a regular Port-Channel (not sub-interface)
+                        regular_l3_port_channel_names.add(interface_name)
+                        continue
+                    # This is a subinterface for a port-channel interface.
+                    # We need to ensure that parent port-channel interface is also included explicitly
+                    # within list of Port-Channel interfaces.
+                    parent_port_channel_name = interface_name.split(".", maxsplit=1)[0]
+                    subif_parent_port_channel_names.add(parent_port_channel_name)
+                    if l3_port_channel.member_interfaces:
+                        msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'member_interfaces' set. This is not a valid setting."
                         raise AristaAvdInvalidInputsError(msg)
+                    if l3_port_channel._get("mode"):
+                        # implies 'mode' is set when not applicable for a sub-interface
+                        msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'mode' set. This is not a valid setting."
+                        raise AristaAvdInvalidInputsError(msg)
+                    if l3_port_channel._get("mtu"):
+                        # implies 'mtu' is set when not applicable for a sub-interface
+                        msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'mtu' set. This is not a valid setting."
+                        raise AristaAvdInvalidInputsError(msg)
+
+                # Sanity check if there are any sub-interfaces for which parent Port-channel is not explicitly specified
+                if missing_parent_port_channels := subif_parent_port_channel_names.difference(regular_l3_port_channel_names):
+                    msg = (
+                        f"One or more L3 Port-Channels '{', '.join(natural_sort(missing_parent_port_channels))}' "
+                        "need to be specified as they have sub-interfaces referencing them."
+                    )
+                    raise AristaAvdInvalidInputsError(msg)
 
                 # Now that validation is complete, we can make another pass at all l3_port_channels
                 # (subinterfaces or otherwise) and generate their structured config.
