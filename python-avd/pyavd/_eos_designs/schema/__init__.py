@@ -36554,16 +36554,13 @@ class EosDesigns(EosDesignsRootModel):
                         class MemberInterfacesItem(AvdModel):
                             """Subclass of AvdModel."""
 
-                            class StructuredConfig(EosCliConfigGen.EthernetInterfacesItem):
-                                """Subclass of AvdModel."""
-
                             _fields: ClassVar[dict] = {
                                 "name": {"type": str},
                                 "description": {"type": str},
                                 "peer": {"type": str},
                                 "peer_interface": {"type": str},
                                 "speed": {"type": str},
-                                "structured_config": {"type": StructuredConfig},
+                                "structured_config": {"type": EosCliConfigGen.EthernetInterfacesItem},
                             }
                             name: str
                             """
@@ -36589,12 +36586,8 @@ class EosDesigns(EosDesignsRootModel):
                             Speed should be set in the format `<interface_speed>` or `forced <interface_speed>` or `auto
                             <interface_speed>`.
                             """
-                            structured_config: StructuredConfig
-                            """
-                            Custom structured config for the member ethernet interface.
-
-                            Subclass of AvdModel.
-                            """
+                            structured_config: EosCliConfigGen.EthernetInterfacesItem
+                            """Custom structured config for the member ethernet interface."""
 
                             if TYPE_CHECKING:
 
@@ -36606,7 +36599,7 @@ class EosDesigns(EosDesignsRootModel):
                                     peer: str | None | UndefinedType = Undefined,
                                     peer_interface: str | None | UndefinedType = Undefined,
                                     speed: str | None | UndefinedType = Undefined,
-                                    structured_config: StructuredConfig | UndefinedType = Undefined,
+                                    structured_config: EosCliConfigGen.EthernetInterfacesItem | UndefinedType = Undefined,
                                 ) -> None:
                                     """
                                     MemberInterfacesItem.
@@ -36630,10 +36623,7 @@ class EosDesigns(EosDesignsRootModel):
                                         speed:
                                            Speed should be set in the format `<interface_speed>` or `forced <interface_speed>` or `auto
                                            <interface_speed>`.
-                                        structured_config:
-                                           Custom structured config for the member ethernet interface.
-
-                                           Subclass of AvdModel.
+                                        structured_config: Custom structured config for the member ethernet interface.
 
                                     """
 
@@ -36768,9 +36758,6 @@ class EosDesigns(EosDesignsRootModel):
 
                                     """
 
-                        class StructuredConfig(EosCliConfigGen.PortChannelInterfacesItem):
-                            """Subclass of AvdModel."""
-
                         _fields: ClassVar[dict] = {
                             "name": {"type": str},
                             "nodes": {"type": Nodes},
@@ -36789,7 +36776,7 @@ class EosDesigns(EosDesignsRootModel):
                             "ipv4_acl_out": {"type": str},
                             "ospf": {"type": Ospf},
                             "flow_tracking": {"type": FlowTracking},
-                            "structured_config": {"type": StructuredConfig},
+                            "structured_config": {"type": EosCliConfigGen.PortChannelInterfacesItem},
                             "raw_eos_cli": {"type": str},
                         }
                         name: str
@@ -36866,12 +36853,10 @@ class EosDesigns(EosDesignsRootModel):
 
                         Subclass of AvdModel.
                         """
-                        structured_config: StructuredConfig
+                        structured_config: EosCliConfigGen.PortChannelInterfacesItem
                         """
                         Custom structured config added under port_channel_interfaces.[name=<interface>] for
                         eos_cli_config_gen.
-
-                        Subclass of AvdModel.
                         """
                         raw_eos_cli: str | None
                         """EOS CLI rendered directly on the Port-Channel interface in the final EOS configuration."""
@@ -36898,7 +36883,7 @@ class EosDesigns(EosDesignsRootModel):
                                 ipv4_acl_out: str | None | UndefinedType = Undefined,
                                 ospf: Ospf | UndefinedType = Undefined,
                                 flow_tracking: FlowTracking | UndefinedType = Undefined,
-                                structured_config: StructuredConfig | UndefinedType = Undefined,
+                                structured_config: EosCliConfigGen.PortChannelInterfacesItem | UndefinedType = Undefined,
                                 raw_eos_cli: str | None | UndefinedType = Undefined,
                             ) -> None:
                                 """
@@ -36954,8 +36939,6 @@ class EosDesigns(EosDesignsRootModel):
                                     structured_config:
                                        Custom structured config added under port_channel_interfaces.[name=<interface>] for
                                        eos_cli_config_gen.
-
-                                       Subclass of AvdModel.
                                     raw_eos_cli: EOS CLI rendered directly on the Port-Channel interface in the final EOS configuration.
 
                                 """
