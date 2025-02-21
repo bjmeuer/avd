@@ -6,11 +6,11 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Protocol
 
+from pyavd._eos_cli_config_gen.schema import EosCliConfigGen
+from pyavd._eos_designs.structured_config.structured_config_generator import structured_config_contributor
 from pyavd._errors import AristaAvdError, AristaAvdInvalidInputsError
 from pyavd._utils import append_if_not_duplicate, short_esi_to_route_target
 from pyavd.j2filters import natural_sort
-from pyavd._eos_cli_config_gen.schema import EosCliConfigGen
-from pyavd._eos_designs.structured_config.structured_config_generator import structured_config_contributor
 
 if TYPE_CHECKING:
     from pyavd._eos_designs.schema import EosDesigns
@@ -33,14 +33,13 @@ class PortChannelInterfacesMixin(Protocol):
         Only used with L1 network services or L3 network services
         """
         if not self.shared_utils.network_services_l1 and not self.shared_utils.network_services_l3:
-            return None
+            return
 
         # Keeping separate list of auto-generated parent interfaces
         # This is used to check for conflicts between auto-generated parents
         # At the end of _set_point_to_point_port_channel_interfaces, parent interfaces are
         # added to structured_config if they were not explicitly configured.
         potential_parent_interfaces = EosCliConfigGen.PortChannelInterfaces()
-
 
         # Set to collect all the physical port-channels explicitly configured by _set_point_to_point_port_channel_interfaces.
         configured_physical_po: set[str] = set()
