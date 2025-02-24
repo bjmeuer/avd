@@ -298,7 +298,8 @@ class RouterBgpMixin(Protocol):
                     mlag_peer=self.shared_utils.mlag_peer,
                     interface=interface_name,
                     peer_interface=interface_name,
-                ),
+                )
+                or None,
             )
         else:
             if not vrf.mlag_ibgp_peering_ipv4_pool:
@@ -316,7 +317,8 @@ class RouterBgpMixin(Protocol):
                     **strip_empties_from_dict(
                         {"mlag_peer": self.shared_utils.mlag_peer, "interface": interface_name, "peer_interface": interface_name, "vrf": vrf.name}
                     ),
-                ),
+                )
+                or None,
             )
             # In case of only underlay_rfc5549 but not overlay_mlag_rfc5549, we need to remove the ipv6 next-hop per neighbor/vrf
             # This is only needed when we use the same MLAG peer-group for both underlay and overlay.
