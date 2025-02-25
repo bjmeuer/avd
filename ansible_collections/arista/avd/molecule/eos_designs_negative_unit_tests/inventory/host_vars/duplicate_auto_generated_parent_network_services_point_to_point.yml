@@ -32,7 +32,7 @@ tenants:
                 duplicate_auto_generated_parent_network_services_point_to_point,
                 fake_peer,
               ]
-            interfaces: [Ethernet7, Ethernet7]
+            interfaces: [Ethernet1/1, Ethernet1/1]
             port_channel:
               mode: active
               short_esi: "0102:DEAD:CAFE"
@@ -54,7 +54,8 @@ tenants:
                 duplicate_auto_generated_parent_network_services_point_to_point,
                 fake_peer,
               ]
-            interfaces: [Ethernet7, Ethernet7]
+            # Ethernet 11 and Ethernet 1/1 will generate the same port-channel ID Port-Channel11
+            interfaces: [Ethernet11, Ethernet11]
             port_channel:
               mode: active
               short_esi: "0102:BEEF:F00D"
@@ -66,7 +67,7 @@ tenants:
 
 expected_error_message: >-
   Found duplicate objects with conflicting data while generating configuration for PortChannelInterfaces.
-  {'name': 'Port-Channel7', 'shutdown': False, 'evpn_ethernet_segment': {'identifier': '0000:0000:0102:BEEF:F00D', 'route_target': '01:02:BE:EF:F0:0D'},
+  {'name': 'Port-Channel11', 'shutdown': False, 'evpn_ethernet_segment': {'identifier': '0000:0000:0102:BEEF:F00D', 'route_target': '01:02:BE:EF:F0:0D'},
   'lacp_id': '0102.BEEF.F00D', 'peer_type': 'system', 'switchport': {'enabled': False}}
-  conflicts with {'name': 'Port-Channel7', 'shutdown': False, 'evpn_ethernet_segment': {'identifier': '0000:0000:0102:DEAD:CAFE',
+  conflicts with {'name': 'Port-Channel11', 'shutdown': False, 'evpn_ethernet_segment': {'identifier': '0000:0000:0102:DEAD:CAFE',
   'route_target': '01:02:DE:AD:CA:FE'}, 'lacp_id': '0102.DEAD.CAFE', 'peer_type': 'system', 'switchport': {'enabled': False}}.

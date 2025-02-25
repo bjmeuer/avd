@@ -18,12 +18,6 @@ ethernet_interfaces:
     id: 7
     mode: active
   peer_type: point_to_point_service
-- name: Ethernet6
-  shutdown: false
-  channel_group:
-    id: 6
-    mode: active
-  peer_type: point_to_point_service
 hostname: network_services_point_to_point
 ip_igmp_snooping:
   globally_enabled: true
@@ -67,33 +61,6 @@ patch_panel:
     - id: '2'
       type: pseudowire
       endpoint: bgp vpws TENANT_A pseudowire TEN_A_ELINE_VLAN_BASE_AUTO_GENERATED_PARENT_1000
-  - name: TEN_A_ELINE_VLAN_BASE_EXPLICIT_CHILD_1000
-    enabled: true
-    connectors:
-    - id: '1'
-      type: interface
-      endpoint: Port-Channel6.1000
-    - id: '2'
-      type: pseudowire
-      endpoint: bgp vpws TENANT_A pseudowire TEN_A_ELINE_VLAN_BASE_EXPLICIT_CHILD_1000
-  - name: TEN_A_ELINE_VLAN_BASE_EXPLICIT_CHILD_1001
-    enabled: true
-    connectors:
-    - id: '1'
-      type: interface
-      endpoint: Port-Channel6.1001
-    - id: '2'
-      type: pseudowire
-      endpoint: bgp vpws TENANT_A pseudowire TEN_A_ELINE_VLAN_BASE_EXPLICIT_CHILD_1001
-  - name: TEN_A_ELINE_VLAN_BASE_EXPLICIT_PARENT
-    enabled: true
-    connectors:
-    - id: '1'
-      type: interface
-      endpoint: Port-Channel6
-    - id: '2'
-      type: pseudowire
-      endpoint: bgp vpws TENANT_A pseudowire TEN_A_ELINE_VLAN_BASE_EXPLICIT_PARENT
 port_channel_interfaces:
 - name: Port-Channel7.1000
   shutdown: false
@@ -104,33 +71,6 @@ port_channel_interfaces:
     network:
       encapsulation: client
   peer_type: point_to_point_service
-- name: Port-Channel6.1000
-  shutdown: false
-  encapsulation_vlan:
-    client:
-      encapsulation: dot1q
-      vlan: 1000
-    network:
-      encapsulation: client
-  peer_type: point_to_point_service
-- name: Port-Channel6.1001
-  shutdown: false
-  encapsulation_vlan:
-    client:
-      encapsulation: dot1q
-      vlan: 1001
-    network:
-      encapsulation: client
-  peer_type: point_to_point_service
-- name: Port-Channel6
-  shutdown: false
-  evpn_ethernet_segment:
-    identifier: 0000:0000:0102:0000:CAFE
-    route_target: 01:02:00:00:CA:FE
-  lacp_id: 0102.0000.CAFE
-  peer_type: point_to_point_service
-  switchport:
-    enabled: false
 - name: Port-Channel7
   shutdown: false
   evpn_ethernet_segment:
