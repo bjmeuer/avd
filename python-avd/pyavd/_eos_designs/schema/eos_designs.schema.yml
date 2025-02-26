@@ -7051,7 +7051,11 @@ $defs:
                 documentation_options:
                   table: network-services-vrfs-l3-port-channel-settings
                 type: list
-                primary_key: name
+                description: 'List of L3 Port-Channels.
+
+                  This will create IP routed Port-Channel inside VRF.
+
+                  '
                 items:
                   type: dict
                   keys:

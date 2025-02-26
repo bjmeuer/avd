@@ -11,8 +11,8 @@
     | [<samp>&nbsp;&nbsp;-&nbsp;name</samp>](## "<network_services_keys.name>.[].name") | String | Required, Unique |  |  | Specify a tenant name.<br>Tenant provide a construct to group L3 VRFs and L2 VLANs.<br>Networks services can be filtered by tenant name.<br> |
     | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;vrfs</samp>](## "<network_services_keys.name>.[].vrfs") | List, items: Dictionary |  |  |  | VRFs will only be configured on a node if any of the underlying objects like `svis`, `l3_interfaces` or `l3_port_channels` apply to the node.<br><br>It is recommended to only define a VRF in one Tenant. If the same VRF name is used across multiple tenants and those tenants<br>are accepted by `filter.tenants` on the node, any object set under the duplicate VRFs must either be unique or be an exact match.<br><br>VRF "default" is partially supported under network-services. Currently the supported options for "default" vrf are route-target,<br>route-distinguisher settings, structured_config, raw_eos_cli in bgp and SVIs are the only supported interface type.<br>Vlan-aware-bundles are supported as well inside default vrf. OSPF is not supported currently.<br> |
     | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;name</samp>](## "<network_services_keys.name>.[].vrfs.[].name") | String | Required, Unique |  |  |  |
-    | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l3_port_channels</samp>](## "<network_services_keys.name>.[].vrfs.[].l3_port_channels") | List, items: Dictionary |  |  |  |  |
-    | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;name</samp>](## "<network_services_keys.name>.[].vrfs.[].l3_port_channels.[].name") | String | Required, Unique |  | Pattern: `Port-Channel[\d/]+(\.[\d]+)?` | Port-Channel interface name like 'Port-Channel2' or subinterface name like 'Port-Channel2.42'.<br>For a Port-Channel subinterface, the parent Port-Channel interface must be defined as well. |
+    | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l3_port_channels</samp>](## "<network_services_keys.name>.[].vrfs.[].l3_port_channels") | List, items: Dictionary |  |  |  | List of L3 Port-Channels.<br>This will create IP routed Port-Channel inside VRF.<br> |
+    | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;name</samp>](## "<network_services_keys.name>.[].vrfs.[].l3_port_channels.[].name") | String | Required |  | Pattern: `Port-Channel[\d/]+(\.[\d]+)?` | Port-Channel interface name like 'Port-Channel2' or subinterface name like 'Port-Channel2.42'.<br>For a Port-Channel subinterface, the parent Port-Channel interface must be defined as well. |
     | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nodes</samp>](## "<network_services_keys.name>.[].vrfs.[].l3_port_channels.[].nodes") | List, items: String | Required |  |  |  |
     | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&lt;str&gt;</samp>](## "<network_services_keys.name>.[].vrfs.[].l3_port_channels.[].nodes.[]") | String |  |  |  | Node. |
     | [<samp>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description</samp>](## "<network_services_keys.name>.[].vrfs.[].l3_port_channels.[].description") | String |  |  |  | Interface description.<br>If not set, a default description will be configured with '[<peer>[ <peer_port_channel>]]'. |
@@ -73,11 +73,14 @@
         # Vlan-aware-bundles are supported as well inside default vrf. OSPF is not supported currently.
         vrfs:
           - name: <str; required; unique>
+
+            # List of L3 Port-Channels.
+            # This will create IP routed Port-Channel inside VRF.
             l3_port_channels:
 
                 # Port-Channel interface name like 'Port-Channel2' or subinterface name like 'Port-Channel2.42'.
                 # For a Port-Channel subinterface, the parent Port-Channel interface must be defined as well.
-              - name: <str; required; unique>
+              - name: <str; required>
                 nodes: # required
 
                     # Node.

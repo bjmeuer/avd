@@ -37019,10 +37019,8 @@ class EosDesigns(EosDesignsRootModel):
 
                                 """
 
-                    class L3PortChannels(AvdIndexedList[str, L3PortChannelsItem]):
-                        """Subclass of AvdIndexedList with `L3PortChannelsItem` items. Primary key is `name` (`str`)."""
-
-                        _primary_key: ClassVar[str] = "name"
+                    class L3PortChannels(AvdList[L3PortChannelsItem]):
+                        """Subclass of AvdList with `L3PortChannelsItem` items."""
 
                     L3PortChannels._item_type = L3PortChannelsItem
 
@@ -38602,7 +38600,14 @@ class EosDesigns(EosDesignsRootModel):
                     Subclass of AvdList with `L3InterfacesItem` items.
                     """
                     l3_port_channels: L3PortChannels
-                    """Subclass of AvdIndexedList with `L3PortChannelsItem` items. Primary key is `name` (`str`)."""
+                    """
+                    List of L3 Port-Channels.
+                    This will create IP routed Port-Channel inside VRF.
+
+
+                    Subclass of AvdList
+                    with `L3PortChannelsItem` items.
+                    """
                     loopbacks: Loopbacks
                     """
                     List of Loopback interfaces.
@@ -38842,7 +38847,13 @@ class EosDesigns(EosDesignsRootModel):
 
 
                                    Subclass of AvdList with `L3InterfacesItem` items.
-                                l3_port_channels: Subclass of AvdIndexedList with `L3PortChannelsItem` items. Primary key is `name` (`str`).
+                                l3_port_channels:
+                                   List of L3 Port-Channels.
+                                   This will create IP routed Port-Channel inside VRF.
+
+
+                                   Subclass of AvdList
+                                   with `L3PortChannelsItem` items.
                                 loopbacks:
                                    List of Loopback interfaces.
                                    This will create Loopback interfaces inside the VRF.

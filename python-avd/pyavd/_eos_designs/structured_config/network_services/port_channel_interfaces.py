@@ -8,8 +8,9 @@ from typing import TYPE_CHECKING, Protocol
 
 from pyavd._eos_cli_config_gen.schema import EosCliConfigGen
 from pyavd._eos_designs.structured_config.structured_config_generator import structured_config_contributor
-from pyavd._errors import AristaAvdError, AristaAvdInvalidInputsError
-from pyavd._utils import append_if_not_duplicate, short_esi_to_route_target
+from pyavd._errors import AristaAvdError, AristaAvdInvalidInputsError, AristaAvdMissingVariableError
+from pyavd._utils import default, short_esi_to_route_target
+from pyavd.api.interface_descriptions import InterfaceDescriptionData
 from pyavd.j2filters import natural_sort
 
 if TYPE_CHECKING:
@@ -50,6 +51,7 @@ class PortChannelInterfacesMixin(Protocol):
                 # to only contain entries with our hostname
                 subif_parent_port_channel_names = set()
                 regular_l3_port_channel_names = set()
+                node_type_in_schema = "l3_port_channels"
                 for l3_port_channel in vrf.l3_port_channels:
                     interface_name = l3_port_channel.name
                     is_subinterface = "." in interface_name
@@ -97,14 +99,88 @@ class PortChannelInterfacesMixin(Protocol):
                         if node_name != self.shared_utils.hostname:
                             continue
 
-                        port_channel_interface = self._get_l3_port_channel_cfg(l3_port_channel, node_index, vrf.name, vrf.ospf.enabled)
-                        append_if_not_duplicate(
-                            list_of_dicts=port_channel_interfaces,
-                            primary_key="name",
-                            new_dict=port_channel_interface,
-                            context="L3 Port-Channel interfaces defined under network services l3_port_channels",
-                            context_keys=["name", "peer", "peer_port_channel"],
+                        port_channel_interface = EosCliConfigGen.PortChannelInterfacesItem(
+                            name=l3_port_channel.name,
+                            peer=l3_port_channel.peer,
+                            mtu=l3_port_channel.mtu if self.shared_utils.platform_settings.feature_support.per_interface_mtu else None,
+                            shutdown=not l3_port_channel.enabled,
+                            eos_cli=l3_port_channel.raw_eos_cli,
+                            flow_tracker=self.shared_utils.new_get_flow_tracker(
+                                l3_port_channel.flow_tracking, output_type=EosCliConfigGen.EthernetInterfacesItem.FlowTracker
+                            ),
+                            vrf=vrf.name if vrf.name != "default" else None,
+                            peer_type="l3_port_channel",
+                            peer_interface=l3_port_channel.peer_port_channel if l3_port_channel.peer_port_channel else None,
                         )
+
+                        if l3_port_channel.ipv4_acl_in:
+                            port_channel_interface._update(access_group_in=l3_port_channel.ipv4_acl_in)
+                        if l3_port_channel.ipv4_acl_out:
+                            port_channel_interface._update(access_group_out=l3_port_channel.ipv4_acl_out)
+
+                        if "." not in l3_port_channel.name:
+                            port_channel_interface.switchport.enabled = False
+
+                        if l3_port_channel.ospf.enabled and vrf.ospf.enabled:
+                            port_channel_interface._update(
+                                ospf_area=l3_port_channel.ospf.area,
+                                ospf_network_point_to_point=l3_port_channel.ospf.point_to_point,
+                                ospf_cost=l3_port_channel.ospf.cost,
+                            )
+                            ospf_authentication = l3_port_channel.ospf.authentication
+                            if ospf_authentication == "simple" and (ospf_simple_auth_key := l3_port_channel.ospf.simple_auth_key) is not None:
+                                port_channel_interface._update(ospf_authentication=ospf_authentication, ospf_authentication_key=ospf_simple_auth_key)
+                            elif ospf_authentication == "message-digest" and (ospf_message_digest_keys := l3_port_channel.ospf.message_digest_keys) is not None:
+                                for ospf_key in ospf_message_digest_keys:
+                                    if not (ospf_key.id and ospf_key.key):
+                                        continue
+                                    port_channel_interface.ospf_message_digest_keys.append_new(
+                                        id=ospf_key.id,
+                                        hash_algorithm=ospf_key.hash_algorithm,
+                                        key=ospf_key.key,
+                                    )
+                                if port_channel_interface.ospf_message_digest_keys:
+                                    port_channel_interface.ospf_authentication = ospf_authentication
+
+                        ip_address = None
+                        if l3_port_channel.ip_address:
+                            ip_address = l3_port_channel.ip_address
+                        if l3_port_channel.ip_addresses:
+                            ip_address = l3_port_channel.ip_addresses[node_index]
+                        if ip_address:
+                            port_channel_interface.ip_address = ip_address
+
+                        if "." in l3_port_channel.name:
+                            port_channel_interface.encapsulation_dot1q.vlan = default(
+                                l3_port_channel.encapsulation_dot1q_vlan, int(l3_port_channel.name.split(".", maxsplit=1)[-1])
+                            )
+                            if not ip_address:
+                                msg = f"{self.shared_utils.node_type_key_data.key}.nodes[name={self.shared_utils.hostname}].{node_type_in_schema}"
+                                msg += f"[name={l3_port_channel.name}].ip_address"
+                                raise AristaAvdMissingVariableError(msg)
+
+                        interface_description = None
+                        if l3_port_channel.description:
+                            interface_description = l3_port_channel.description
+                        if l3_port_channel.descriptions:
+                            interface_description = l3_port_channel.descriptions[node_index]
+                        if not interface_description:
+                            interface_description = self.shared_utils.interface_descriptions.underlay_port_channel_interface(
+                                InterfaceDescriptionData(
+                                    shared_utils=self.shared_utils,
+                                    interface=l3_port_channel.name,
+                                    peer=l3_port_channel.peer,
+                                    peer_interface=l3_port_channel.peer_port_channel,
+                                ),
+                            )
+                        port_channel_interface.description = interface_description
+
+                        if l3_port_channel.structured_config:
+                            self.custom_structured_configs.nested.port_channel_interfaces.obtain(l3_port_channel.name)._deepmerge(
+                                l3_port_channel.structured_config, list_merge=self.custom_structured_configs.list_merge_strategy
+                            )
+
+                        self.structured_config.port_channel_interfaces.append(port_channel_interface)
 
             if not tenant.point_to_point_services:
                 continue
