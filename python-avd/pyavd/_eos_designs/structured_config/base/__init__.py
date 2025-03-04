@@ -530,8 +530,8 @@ class AvdStructuredConfigBaseProtocol(NtpMixin, SnmpServerMixin, RouterGeneralMi
         return strip_empties_from_dict(
             {
                 "enable_vrfs": [{"name": self.inputs.mgmt_interface_vrf}],
-                "enable_http": self.inputs.management_eapi.enable_http or None,
-                "enable_https": self.inputs.management_eapi.enable_https or None,
+                "enable_http": self.inputs.management_eapi.enable_http,
+                "enable_https": self.inputs.management_eapi.enable_https,
                 "default_services": self.inputs.management_eapi.default_services,
             }
         )

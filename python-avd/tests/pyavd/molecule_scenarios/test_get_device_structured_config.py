@@ -2,7 +2,9 @@
 # Use of this source code is governed by the Apache License 2.0
 # that can be found in the LICENSE file.
 import json
+import sys
 from copy import deepcopy
+from unittest.mock import patch
 
 import pytest
 
@@ -36,7 +38,8 @@ def test_get_device_structured_config(molecule_host: MoleculeHost) -> None:
 
     expected_structured_config = molecule_host.structured_config
     avd_facts = molecule_host.scenario.avd_facts
-    structured_config = get_device_structured_config(molecule_host.name, inputs, avd_facts)
+    with patch("sys.path", [*sys.path, *molecule_host.scenario.extra_python_paths]):
+        structured_config = get_device_structured_config(molecule_host.name, inputs, avd_facts)
 
     assert isinstance(structured_config, dict)
     assert molecule_host.name == structured_config["hostname"]

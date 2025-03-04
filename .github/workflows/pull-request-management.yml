@@ -197,6 +197,7 @@ jobs:
       fail-fast: true
       matrix:
         avd_scenario:
+          - "ansible_only"
           - "eos_designs_deprecated_vars"
           - "eos_designs-l2ls"
           - "eos_designs-mpls-isis-sr-ldp"

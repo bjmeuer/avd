@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING, Protocol
 from pyavd._eos_cli_config_gen.schema import EosCliConfigGen
 from pyavd._eos_designs.structured_config.structured_config_generator import structured_config_contributor
 from pyavd._errors import AristaAvdError, AristaAvdInvalidInputsError
-from pyavd._utils import get
 from pyavd.api.interface_descriptions import InterfaceDescriptionData
+from pyavd._utils import get_ip_from_ip_prefix, get
 from pyavd.j2filters import natural_sort
 
 if TYPE_CHECKING:
@@ -132,6 +132,9 @@ class EthernetInterfacesMixin(Protocol):
                     continue
 
                 interface_name = l3_interface.interfaces[node_index]
+                interface_ip = l3_interface.ip_addresses[node_index]
+                if "/" in interface_ip:
+                    interface_ip = get_ip_from_ip_prefix(interface_ip)
                 # if 'descriptions' is set, it is preferred
                 interface_description = l3_interface.descriptions[node_index] if l3_interface.descriptions else l3_interface.description
                 interface = EosCliConfigGen.EthernetInterfacesItem(
@@ -155,11 +158,23 @@ class EthernetInterfacesMixin(Protocol):
                 if self.inputs.fabric_sflow.l3_interfaces is not None:
                     interface.sflow.enable = self.inputs.fabric_sflow.l3_interfaces
 
-                if self._l3_interface_acls is not None:
-                    interface._update(
-                        access_group_in=get(self._l3_interface_acls, f"{interface_name}..ipv4_acl_in..name", separator=".."),
-                        access_group_out=get(self._l3_interface_acls, f"{interface_name}..ipv4_acl_out..name", separator=".."),
+                if l3_interface.ipv4_acl_in:
+                    acl = self.shared_utils.get_ipv4_acl(
+                        name=l3_interface.ipv4_acl_in,
+                        interface_name=interface_name,
+                        interface_ip=interface_ip,
                     )
+                    interface.access_group_in = acl.name
+                    self._set_ipv4_acl(acl)
+
+                if l3_interface.ipv4_acl_out:
+                    acl = self.shared_utils.get_ipv4_acl(
+                        name=l3_interface.ipv4_acl_out,
+                        interface_name=interface_name,
+                        interface_ip=interface_ip,
+                    )
+                    interface.access_group_out = acl.name
+                    self._set_ipv4_acl(acl)
 
                 if "." in interface_name:
                     # This is a subinterface so we need to ensure that the parent is created

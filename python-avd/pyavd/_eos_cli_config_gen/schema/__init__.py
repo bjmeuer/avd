@@ -51359,11 +51359,11 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                 """Subclass of AvdModel."""
 
                 _fields: ClassVar[dict] = {"name": {"type": str}}
-                name: str | None
+                name: str
 
                 if TYPE_CHECKING:
 
-                    def __init__(self, *, name: str | None | UndefinedType = Undefined) -> None:
+                    def __init__(self, *, name: str | UndefinedType = Undefined) -> None:
                         """
                         ExitGroupsItem.
 
@@ -51375,8 +51375,10 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
 
                         """
 
-            class ExitGroups(AvdList[ExitGroupsItem]):
-                """Subclass of AvdList with `ExitGroupsItem` items."""
+            class ExitGroups(AvdIndexedList[str, ExitGroupsItem]):
+                """Subclass of AvdIndexedList with `ExitGroupsItem` items. Primary key is `name` (`str`)."""
+
+                _primary_key: ClassVar[str] = "name"
 
             ExitGroups._item_type = ExitGroupsItem
 
@@ -51387,8 +51389,8 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
             The exit groups that are configured under a policy are strictly ordered, meaning an exit group
             appearing first has more priority than the exit group that follows it.
 
-            Subclass of AvdList with
-            `ExitGroupsItem` items.
+            Subclass of AvdIndexedList
+            with `ExitGroupsItem` items. Primary key is `name` (`str`).
             """
 
             if TYPE_CHECKING:
@@ -51406,8 +51408,8 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                            The exit groups that are configured under a policy are strictly ordered, meaning an exit group
                            appearing first has more priority than the exit group that follows it.
 
-                           Subclass of AvdList with
-                           `ExitGroupsItem` items.
+                           Subclass of AvdIndexedList
+                           with `ExitGroupsItem` items. Primary key is `name` (`str`).
 
                     """
 
@@ -51425,11 +51427,11 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                 """Subclass of AvdModel."""
 
                 _fields: ClassVar[dict] = {"name": {"type": str}}
-                name: str | None
+                name: str
 
                 if TYPE_CHECKING:
 
-                    def __init__(self, *, name: str | None | UndefinedType = Undefined) -> None:
+                    def __init__(self, *, name: str | UndefinedType = Undefined) -> None:
                         """
                         LocalConnectionsItem.
 
@@ -51441,8 +51443,10 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
 
                         """
 
-            class LocalConnections(AvdList[LocalConnectionsItem]):
-                """Subclass of AvdList with `LocalConnectionsItem` items."""
+            class LocalConnections(AvdIndexedList[str, LocalConnectionsItem]):
+                """Subclass of AvdIndexedList with `LocalConnectionsItem` items. Primary key is `name` (`str`)."""
+
+                _primary_key: ClassVar[str] = "name"
 
             LocalConnections._item_type = LocalConnectionsItem
 
@@ -51460,7 +51464,8 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
             insertion module reports the health of the connection and the exit will qualify for use only when it
             is healthy.
 
-            Subclass of AvdList with `LocalConnectionsItem` items.
+            Subclass of AvdIndexedList with `LocalConnectionsItem` items. Primary key is `name`
+            (`str`).
             """
 
             if TYPE_CHECKING:
@@ -51489,7 +51494,8 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                            insertion module reports the health of the connection and the exit will qualify for use only when it
                            is healthy.
 
-                           Subclass of AvdList with `LocalConnectionsItem` items.
+                           Subclass of AvdIndexedList with `LocalConnectionsItem` items. Primary key is `name`
+                           (`str`).
 
                     """
 

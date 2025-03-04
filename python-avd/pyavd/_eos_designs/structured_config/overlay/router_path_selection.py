@@ -165,7 +165,7 @@ class RouterPathSelectionMixin(Protocol):
             if self.shared_utils.is_wan_client and self.shared_utils.should_connect_to_wan_rs([path_group_name]):
                 stun_server_profiles = self._stun_server_profiles.get(path_group_name, [])
                 if stun_server_profiles:
-                    local_interface["stun"] = {"server_profiles": [profile["name"] for profile in stun_server_profiles]}
+                    local_interface["stun"] = {"server_profiles": [profile.name for profile in stun_server_profiles]}
 
             local_interfaces.append(local_interface)
 

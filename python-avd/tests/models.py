@@ -77,6 +77,7 @@ class MoleculeScenario:
     path: Path
     hosts: list[MoleculeHost]
     pool_manager: PoolManager | None
+    extra_python_paths: list[str]
 
     def __init__(self, name: str) -> None:
         """
@@ -110,6 +111,11 @@ class MoleculeScenario:
                 continue
             self.hosts.append(MoleculeHost(name=host.name, ansible_host=host, scenario=self))
         self.pool_manager = PoolManager(self.path / "intended")
+
+        self.extra_python_paths = []
+        if (extra_python_paths_file := self.path / "extra_python_paths").exists():
+            with extra_python_paths_file.open() as f:
+                self.extra_python_paths = [str(self.path / line[:-1]) for line in f.readlines()]
 
     @cached_property
     def avd_facts(self) -> dict:
