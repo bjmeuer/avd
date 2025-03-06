@@ -7176,6 +7176,7 @@ router traffic-engineering
             segment-list label-stack 900002 900010 900011 900012
    router-id ipv4 10.0.0.1
    router-id ipv6 2001:beef:cafe::1
+   twamp-light sender profile test-profile
    !
    flex-algo
       flex-algo 128 test-algo
