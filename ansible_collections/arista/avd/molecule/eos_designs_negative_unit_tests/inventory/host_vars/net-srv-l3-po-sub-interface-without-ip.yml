@@ -23,8 +23,7 @@ tenants:
             peer: inet-cloud
             peer_port_channel: Po1111
             enabled: true
-            nodes:
-              - net-srv-l3-po-sub-interface-without-ip
+            node: net-srv-l3-po-sub-interface-without-ip
             member_interfaces:
               - name: Ethernet4
                 peer_interface: Ethernet8
@@ -36,8 +35,7 @@ tenants:
             peer: inet-cloud-sub100
             peer_port_channel: Po1111.100
             enabled: true
-            nodes:
-              - net-srv-l3-po-sub-interface-without-ip
+            node: net-srv-l3-po-sub-interface-without-ip
 
 expected_error_message: >-
   'l3leaf.nodes[name=net-srv-l3-po-sub-interface-without-ip].l3_port_channels[name=Port-Channel1111.100].ip_address' is required but was not found.

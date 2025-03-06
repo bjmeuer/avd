@@ -36612,16 +36612,6 @@ class EosDesigns(EosDesignsRootModel):
                     class L3PortChannelsItem(AvdModel):
                         """Subclass of AvdModel."""
 
-                        class Nodes(AvdList[str]):
-                            """Subclass of AvdList with `str` items."""
-
-                        Nodes._item_type = str
-
-                        class Descriptions(AvdList[str]):
-                            """Subclass of AvdList with `str` items."""
-
-                        Descriptions._item_type = str
-
                         class MemberInterfacesItem(AvdModel):
                             """Subclass of AvdModel."""
 
@@ -36704,11 +36694,6 @@ class EosDesigns(EosDesignsRootModel):
                             _primary_key: ClassVar[str] = "name"
 
                         MemberInterfaces._item_type = MemberInterfacesItem
-
-                        class IpAddresses(AvdList[str]):
-                            """Subclass of AvdList with `str` items."""
-
-                        IpAddresses._item_type = str
 
                         class Ospf(AvdModel):
                             """Subclass of AvdModel."""
@@ -36831,13 +36816,11 @@ class EosDesigns(EosDesignsRootModel):
 
                         _fields: ClassVar[dict] = {
                             "name": {"type": str},
-                            "nodes": {"type": Nodes},
+                            "node": {"type": str},
                             "description": {"type": str},
-                            "descriptions": {"type": Descriptions},
                             "mode": {"type": str, "default": "active"},
                             "member_interfaces": {"type": MemberInterfaces},
                             "ip_address": {"type": str},
-                            "ip_addresses": {"type": IpAddresses},
                             "encapsulation_dot1q_vlan": {"type": int},
                             "enabled": {"type": bool, "default": True},
                             "peer": {"type": str},
@@ -36856,20 +36839,13 @@ class EosDesigns(EosDesignsRootModel):
                         For a
                         Port-Channel subinterface, the parent Port-Channel interface must be defined as well.
                         """
-                        nodes: Nodes
-                        """Subclass of AvdList with `str` items."""
+                        node: str
+                        """Node."""
                         description: str | None
                         """
                         Interface description.
                         If not set, a default description will be configured with '[<peer>[
                         <peer_port_channel>]]'.
-                        """
-                        descriptions: Descriptions
-                        """
-                        "descriptions" has precedence over "description".
-
-
-                        Subclass of AvdList with `str` items.
                         """
                         mode: Literal["active", "passive", "on"]
                         """
@@ -36888,8 +36864,6 @@ class EosDesigns(EosDesignsRootModel):
                         """
                         ip_address: str | None
                         """IPv4 address/Mask."""
-                        ip_addresses: IpAddresses
-                        """Subclass of AvdList with `str` items."""
                         encapsulation_dot1q_vlan: int | None
                         """
                         For subinterfaces the dot1q vlan is derived from the interface name by default, but can also be
@@ -36938,13 +36912,11 @@ class EosDesigns(EosDesignsRootModel):
                                 self,
                                 *,
                                 name: str | UndefinedType = Undefined,
-                                nodes: Nodes | UndefinedType = Undefined,
+                                node: str | UndefinedType = Undefined,
                                 description: str | None | UndefinedType = Undefined,
-                                descriptions: Descriptions | UndefinedType = Undefined,
                                 mode: Literal["active", "passive", "on"] | UndefinedType = Undefined,
                                 member_interfaces: MemberInterfaces | UndefinedType = Undefined,
                                 ip_address: str | None | UndefinedType = Undefined,
-                                ip_addresses: IpAddresses | UndefinedType = Undefined,
                                 encapsulation_dot1q_vlan: int | None | UndefinedType = Undefined,
                                 enabled: bool | UndefinedType = Undefined,
                                 peer: str | None | UndefinedType = Undefined,
@@ -36968,16 +36940,11 @@ class EosDesigns(EosDesignsRootModel):
                                        Port-Channel interface name like 'Port-Channel2' or subinterface name like 'Port-Channel2.42'.
                                        For a
                                        Port-Channel subinterface, the parent Port-Channel interface must be defined as well.
-                                    nodes: Subclass of AvdList with `str` items.
+                                    node: Node.
                                     description:
                                        Interface description.
                                        If not set, a default description will be configured with '[<peer>[
                                        <peer_port_channel>]]'.
-                                    descriptions:
-                                       "descriptions" has precedence over "description".
-
-
-                                       Subclass of AvdList with `str` items.
                                     mode:
                                        Port-Channel mode.
                                        Should not be set on Port-Channel subinterfaces.
@@ -36988,7 +36955,6 @@ class EosDesigns(EosDesignsRootModel):
                                        Subclass of
                                        AvdIndexedList with `MemberInterfacesItem` items. Primary key is `name` (`str`).
                                     ip_address: IPv4 address/Mask.
-                                    ip_addresses: Subclass of AvdList with `str` items.
                                     encapsulation_dot1q_vlan:
                                        For subinterfaces the dot1q vlan is derived from the interface name by default, but can also be
                                        specified.

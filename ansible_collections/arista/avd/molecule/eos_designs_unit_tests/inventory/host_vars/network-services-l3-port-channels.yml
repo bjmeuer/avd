@@ -40,8 +40,7 @@ tenants:
             peer: inet-cloud
             peer_port_channel: Po11
             enabled: true
-            nodes:
-              - network-services-l3-port-channels
+            node: network-services-l3-port-channels
             member_interfaces:
               - name: Ethernet10
                 peer_interface: Ethernet10
@@ -53,10 +52,8 @@ tenants:
             peer: inet-cloud-sub100
             peer_port_channel: Po11.100
             enabled: true
-            ip_addresses:
-              - 10.10.10.2/29
-            nodes:
-              - network-services-l3-port-channels
+            ip_address: 10.10.10.2/29
+            node: network-services-l3-port-channels
       - name: TESTING
         vrf_id: 2
         ospf:
@@ -65,13 +62,11 @@ tenants:
           - name: Port-Channel1111
             mode: active
             mtu: 1555
-            descriptions:
-              - Description list
+            description: Description list
             peer: inet-cloud
             peer_port_channel: Po1111
             enabled: true
-            nodes:
-              - network-services-l3-port-channels
+            node: network-services-l3-port-channels
             member_interfaces:
               - name: Ethernet4
                 peer_interface: Ethernet8
@@ -91,10 +86,8 @@ tenants:
             peer: inet-cloud-sub100
             peer_port_channel: Po1111.100
             enabled: true
-            ip_addresses:
-              - 1.1.1.2/29
-            nodes:
-              - network-services-l3-port-channels
+            ip_address: 1.1.1.2/29
+            node: network-services-l3-port-channels
             flow_tracking:
               enabled: true
               name: FT_Test
@@ -118,8 +111,7 @@ tenants:
             ip_address: 1.1.1.30/29
             ipv4_acl_in: inACL
             ipv4_acl_out: outACL
-            nodes:
-              - network-services-l3-port-channels
+            node: network-services-l3-port-channels
             flow_tracking:
               enabled: true
             ospf:

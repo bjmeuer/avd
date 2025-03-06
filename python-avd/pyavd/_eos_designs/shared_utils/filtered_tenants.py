@@ -200,7 +200,7 @@ class FilteredTenantsMixin(Protocol):
             vrf.l3_interfaces = vrf.l3_interfaces._filtered(
                 lambda l3_interface: bool(self.hostname in l3_interface.nodes and l3_interface.ip_addresses and l3_interface.interfaces)
             )
-            vrf.l3_port_channels = vrf.l3_port_channels._filtered(lambda l3_port_channel: bool(self.hostname in l3_port_channel.nodes and l3_port_channel.name))
+            vrf.l3_port_channels = vrf.l3_port_channels._filtered(lambda l3_port_channel: bool(self.hostname == l3_port_channel.node and l3_port_channel.name))
             vrf.loopbacks = vrf.loopbacks._filtered(lambda loopback: loopback.node == self.hostname)
 
             if self.vtep is True:
@@ -315,21 +315,6 @@ class FilteredTenantsMixin(Protocol):
         svis = svis._filtered(lambda svi: "all" in self.filter_tags or bool(set(svi.tags).intersection(self.filter_tags)))
 
         return svis._natural_sorted(sort_key="id")
-
-    def filtered_l3portchannel(
-        self: SharedUtilsProtocol, vrf: EosDesigns._DynamicKeys.DynamicNetworkServicesItem.NetworkServicesItem.VrfsItem
-    ) -> EosDesigns._DynamicKeys.DynamicNetworkServicesItem.NetworkServicesItem.VrfsItem.L3PortChannels:
-        """
-        Return sorted and filtered l3_port_channel list from given tenant vrf.
-
-        Filtering based on hostname and name
-        """
-        if not (self.network_services_l2 or self.network_services_l2_as_subint):
-            return EosDesigns._DynamicKeys.DynamicNetworkServicesItem.NetworkServicesItem.VrfsItem.L3PortChannels()
-
-        return EosDesigns._DynamicKeys.DynamicNetworkServicesItem.NetworkServicesItem.VrfsItem.L3PortChannels(
-            [l3_port_channel for l3_port_channel in vrf.l3_port_channels if self.hostname in l3_port_channel.nodes and l3_port_channel.name]
-        )
 
     @cached_property
     def endpoint_vlans(self: SharedUtilsProtocol) -> list:

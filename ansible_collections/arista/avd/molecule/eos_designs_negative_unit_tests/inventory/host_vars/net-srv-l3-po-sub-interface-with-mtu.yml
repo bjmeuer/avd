@@ -23,8 +23,7 @@ tenants:
             peer: inet-cloud
             peer_port_channel: Po1111
             enabled: true
-            nodes:
-              - net-srv-l3-po-sub-interface-with-mtu
+            node: net-srv-l3-po-sub-interface-with-mtu
             member_interfaces:
               - name: Ethernet4
                 peer_interface: Ethernet8
@@ -37,10 +36,8 @@ tenants:
             peer: inet-cloud-sub100
             peer_port_channel: Po1111.100
             enabled: true
-            ip_addresses:
-              - 1.1.1.2/29
-            nodes:
-              - net-srv-l3-po-sub-interface-with-mtu
+            ip_address: 1.1.1.2/29
+            node: net-srv-l3-po-sub-interface-with-mtu
 
 expected_error_message: >-
   L3 Port-Channel sub-interface 'Port-Channel1111.100' has 'mtu' set. This is not a valid setting.

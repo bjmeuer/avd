@@ -7067,25 +7067,16 @@ $defs:
                         For a Port-Channel subinterface, the parent Port-Channel interface
                         must be defined as well.'
                       pattern: Port-Channel[\d/]+(\.[\d]+)?
-                    nodes:
-                      type: list
+                    node:
+                      type: str
                       required: true
-                      items:
-                        type: str
-                        description: Node.
+                      description: Node.
                     description:
                       type: str
                       description: 'Interface description.
 
                         If not set, a default description will be configured with
                         ''[<peer>[ <peer_port_channel>]]''.'
-                    descriptions:
-                      type: list
-                      items:
-                        type: str
-                      description: '"descriptions" has precedence over "description".
-
-                        '
                     mode:
                       type: str
                       description: 'Port-Channel mode.
@@ -7143,11 +7134,6 @@ $defs:
                     ip_address:
                       type: str
                       description: IPv4 address/Mask.
-                    ip_addresses:
-                      type: list
-                      items:
-                        type: str
-                        description: IPv4_address/Mask.
                     encapsulation_dot1q_vlan:
                       description: For subinterfaces the dot1q vlan is derived from
                         the interface name by default, but can also be specified.
