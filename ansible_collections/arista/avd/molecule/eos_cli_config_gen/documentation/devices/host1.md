@@ -843,8 +843,8 @@ management api gnmi
    !
    transport grpc arTrue
       ip access-group acl1
-      notification timestamp send-time
       authorization requests
+      notification timestamp send-time
    !
    transport grpc MGMT
       ssl profile gnmi
