@@ -46,12 +46,10 @@ class PortChannelInterfacesMixin(Protocol):
         configured_physical_po: set[str] = set()
 
         for tenant in self.shared_utils.filtered_tenants:
+            # Validation for l3_port_channels is done on a per tenant basis
+            subif_parent_port_channel_names = set()
+            regular_l3_port_channel_names = set()
             for vrf in tenant.vrfs:
-                # The l3_port_channel has already been filtered in filtered_tenants
-                # to only contain entries with our hostname
-                subif_parent_port_channel_names = set()
-                regular_l3_port_channel_names = set()
-                node_type_in_schema = "l3_port_channels"
                 for l3_port_channel in vrf.l3_port_channels:
                     interface_name = l3_port_channel.name
                     is_subinterface = "." in interface_name
@@ -60,11 +58,9 @@ class PortChannelInterfacesMixin(Protocol):
                         # This is a regular Port-Channel (not sub-interface)
                         regular_l3_port_channel_names.add(interface_name)
                         continue
-                    # This is a subinterface for a port-channel interface.
-                    # We need to ensure that parent port-channel interface is also included explicitly
-                    # within list of Port-Channel interfaces.
                     parent_port_channel_name = interface_name.split(".", maxsplit=1)[0]
                     subif_parent_port_channel_names.add(parent_port_channel_name)
+
                     if l3_port_channel.member_interfaces:
                         msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'member_interfaces' set. This is not a valid setting."
                         raise AristaAvdInvalidInputsError(msg)
@@ -77,14 +73,19 @@ class PortChannelInterfacesMixin(Protocol):
                         msg = f"L3 Port-Channel sub-interface '{interface_name}' has 'mtu' set. This is not a valid setting."
                         raise AristaAvdInvalidInputsError(msg)
 
-                # Sanity check if there are any sub-interfaces for which parent Port-channel is not explicitly specified
-                if missing_parent_port_channels := subif_parent_port_channel_names.difference(regular_l3_port_channel_names):
-                    msg = (
-                        f"One or more L3 Port-Channels '{', '.join(natural_sort(missing_parent_port_channels))}' "
-                        "need to be specified as they have sub-interfaces referencing them."
-                    )
-                    raise AristaAvdInvalidInputsError(msg)
+            # Sanity check if there are any sub-interfaces for which parent Port-channel is not explicitly specified
+            if missing_parent_port_channels := subif_parent_port_channel_names.difference(regular_l3_port_channel_names):
+                msg = (
+                    f"One or more L3 Port-Channels '{', '.join(natural_sort(missing_parent_port_channels))}' "
+                    "need to be specified as they have sub-interfaces referencing them."
+                )
+                raise AristaAvdInvalidInputsError(msg)
 
+            for vrf in tenant.vrfs:
+                # The l3_port_channel has already been filtered in filtered_tenants
+                # to only contain entries with our hostname
+
+                node_type_in_schema = "l3_port_channels"
                 # Now that validation is complete, we can make another pass at all l3_port_channels
                 # (subinterfaces or otherwise) and generate their structured config.
                 for l3_port_channel in vrf.l3_port_channels:
