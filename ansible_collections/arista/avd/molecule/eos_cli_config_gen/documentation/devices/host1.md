@@ -815,12 +815,12 @@ management accounts
 
 #### Management API gNMI Summary
 
-| Transport | SSL Profile | VRF | Notification Timestamp | ACL | Port |
-| --------- | ----------- | --- | ---------------------- | --- | ---- |
-| MGMT | gnmi | MGMT | send-time | acl1 | 6030 |
-| mytransport | - | - | send-time | acl1 | 6032 |
-| arTrue | - | - | send-time | acl1 | 6030 |
-| arFalse | - | - | send-time | acl1 | 6030 |
+| Transport | SSL Profile | VRF | Notification Timestamp | ACL | Port | Authorization Requests |
+| --------- | ----------- | --- | ---------------------- | --- | ---- | ---------------------- |
+| MGMT | gnmi | MGMT | send-time | acl1 | 6030 | false |
+| mytransport | - | - | send-time | acl1 | 6032 | false |
+| arTrue | - | - | send-time | acl1 | 6030 | True |
+| arFalse | - | - | send-time | acl1 | 6030 | False |
 
 | Transport | Destination | Destination Port | gNMI SSL Profile | Tunnel SSL Profile | VRF | Local Interface | Local Port | Target ID |
 | --------- | ----------- | ---------------- | ---------------- | ------------------ | --- | --------------- | ---------- | --------- |

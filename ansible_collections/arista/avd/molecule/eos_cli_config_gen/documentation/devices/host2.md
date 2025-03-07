@@ -267,10 +267,10 @@ management ssh
 
 #### Management API gNMI Summary
 
-| Transport | SSL Profile | VRF | Notification Timestamp | ACL | Port |
-| --------- | ----------- | --- | ---------------------- | --- | ---- |
-| MGMT | - | MGMT | last-change-time | ACL-GNMI | 6030 |
-| MONITORING | - | MONITORING | last-change-time | - | 6031 |
+| Transport | SSL Profile | VRF | Notification Timestamp | ACL | Port | Authorization Requests |
+| --------- | ----------- | --- | ---------------------- | --- | ---- | ---------------------- |
+| MGMT | - | MGMT | last-change-time | ACL-GNMI | 6030 | false |
+| MONITORING | - | MONITORING | last-change-time | - | 6031 | false |
 
 #### Management API gNMI Device Configuration
 
