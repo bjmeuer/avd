@@ -385,31 +385,26 @@ class AvdStructuredConfigBaseProtocol(NtpMixin, SnmpServerMixin, RouterGeneralMi
             }
         return None
 
-    @cached_property
-    def spanning_tree(self) -> dict | None:
+    @structured_config_contributor
+    def spanning_tree(self) -> None:
         """spanning_tree set based on spanning_tree_root_super, spanning_tree_mode and spanning_tree_priority."""
         if not self.shared_utils.network_services_l2:
-            return {"mode": "none"}
+            self.structured_config.spanning_tree.mode = "none"
+            return
 
-        spanning_tree_root_super = self.shared_utils.node_config.spanning_tree_root_super
         spanning_tree_mode = self.shared_utils.node_config.spanning_tree_mode
-        if spanning_tree_root_super is not True and spanning_tree_mode is None:
-            return None
 
-        spanning_tree = {}
-        if spanning_tree_root_super is True:
-            spanning_tree["root_super"] = True
+        if self.shared_utils.node_config.spanning_tree_root_super is True:
+            self.structured_config.spanning_tree.root_super = True
 
         if spanning_tree_mode is not None:
-            spanning_tree["mode"] = spanning_tree_mode
+            self.structured_config.spanning_tree.mode = spanning_tree_mode
             priority = self.shared_utils.node_config.spanning_tree_priority
             # "rapid-pvst" is not included below. Per vlan spanning-tree priorities are set under network-services.
             if spanning_tree_mode == "mstp":
-                spanning_tree["mst_instances"] = [{"id": "0", "priority": priority}]
+                self.structured_config.spanning_tree.mst_instances.append_new(id="0", priority=priority)
             elif spanning_tree_mode == "rstp":
-                spanning_tree["rstp_priority"] = priority
-
-        return spanning_tree
+                self.structured_config.spanning_tree.rstp_priority = priority
 
     @cached_property
     def service_unsupported_transceiver(self) -> dict | None:

@@ -19,13 +19,13 @@ class AvdStructuredConfigMlag(StructuredConfigGenerator):
             return super().render()
         return None
 
-    @cached_property
-    def spanning_tree(self) -> dict:
+    @structured_config_contributor
+    def spanning_tree(self) -> None:
         vlans = [self.shared_utils.node_config.mlag_peer_vlan]
         if self.shared_utils.mlag_peer_l3_vlan is not None:
             vlans.append(self.shared_utils.mlag_peer_l3_vlan)
 
-        return {"no_spanning_tree_vlan": list_compress(vlans)}
+        self.structured_config.spanning_tree.no_spanning_tree_vlan = list_compress(vlans)
 
     @structured_config_contributor
     def vlans(self) -> None:
