@@ -7396,6 +7396,9 @@ keys:
                     '
                   convert_types:
                   - str
+                authorization_requests:
+                  type: bool
+                  description: Use per-RPC authorization.
           grpc_tunnels:
             type: list
             primary_key: name

@@ -18530,6 +18530,7 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                     "notification_timestamp": {"type": str},
                     "ip_access_group": {"type": str},
                     "port": {"type": int},
+                    "authorization_requests": {"type": bool},
                 }
                 name: str
                 """Transport name."""
@@ -18556,6 +18557,8 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                 Make sure to update the control-plane ACL accordingly in order for the service to be
                 reachable by external applications.
                 """
+                authorization_requests: bool | None
+                """Use per-RPC authorization."""
 
                 if TYPE_CHECKING:
 
@@ -18568,6 +18571,7 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                         notification_timestamp: Literal["send-time", "last-change-time"] | None | UndefinedType = Undefined,
                         ip_access_group: str | None | UndefinedType = Undefined,
                         port: int | None | UndefinedType = Undefined,
+                        authorization_requests: bool | None | UndefinedType = Undefined,
                     ) -> None:
                         """
                         GrpcItem.
@@ -18593,6 +18597,7 @@ class EosCliConfigGen(EosCliConfigGenRootModel):
                                GNMI port.
                                Make sure to update the control-plane ACL accordingly in order for the service to be
                                reachable by external applications.
+                            authorization_requests: Use per-RPC authorization.
 
                         """
 

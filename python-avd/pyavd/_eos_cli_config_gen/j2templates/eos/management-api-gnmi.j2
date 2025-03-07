@@ -32,6 +32,9 @@ management api gnmi
 {%                     if transport.notification_timestamp is arista.avd.defined %}
       notification timestamp {{ transport.notification_timestamp }}
 {%                     endif %}
+{%                     if transport.authorization_requests is arista.avd.defined(true) %}
+      authorization requests
+{%                     endif %}
 {%                 endif %}
 {%             endfor %}
 {%         endif %}

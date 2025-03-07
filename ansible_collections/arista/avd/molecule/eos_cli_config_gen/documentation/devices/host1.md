@@ -819,6 +819,8 @@ management accounts
 | --------- | ----------- | --- | ---------------------- | --- | ---- |
 | MGMT | gnmi | MGMT | send-time | acl1 | 6030 |
 | mytransport | - | - | send-time | acl1 | 6032 |
+| arTrue | - | - | send-time | acl1 | 6030 |
+| arFalse | - | - | send-time | acl1 | 6030 |
 
 | Transport | Destination | Destination Port | gNMI SSL Profile | Tunnel SSL Profile | VRF | Local Interface | Local Port | Target ID |
 | --------- | ----------- | ---------------- | ---------------- | ------------------ | --- | --------------- | ---------- | --------- |
@@ -835,6 +837,15 @@ Provider eos-native is configured.
 ```eos
 !
 management api gnmi
+   transport grpc arFalse
+      ip access-group acl1
+      notification timestamp send-time
+   !
+   transport grpc arTrue
+      ip access-group acl1
+      notification timestamp send-time
+      authorization requests
+   !
    transport grpc MGMT
       ssl profile gnmi
       vrf MGMT
