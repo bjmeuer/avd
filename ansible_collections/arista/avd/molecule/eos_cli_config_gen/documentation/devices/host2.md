@@ -269,8 +269,8 @@ management ssh
 
 | Transport | SSL Profile | VRF | Notification Timestamp | ACL | Port | Authorization Requests |
 | --------- | ----------- | --- | ---------------------- | --- | ---- | ---------------------- |
-| MGMT | - | MGMT | last-change-time | ACL-GNMI | 6030 | false |
-| MONITORING | - | MONITORING | last-change-time | - | 6031 | false |
+| MGMT | - | MGMT | last-change-time | ACL-GNMI | 6030 | False |
+| MONITORING | - | MONITORING | last-change-time | - | 6031 | False |
 
 #### Management API gNMI Device Configuration
 

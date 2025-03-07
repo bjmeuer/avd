@@ -817,8 +817,8 @@ management accounts
 
 | Transport | SSL Profile | VRF | Notification Timestamp | ACL | Port | Authorization Requests |
 | --------- | ----------- | --- | ---------------------- | --- | ---- | ---------------------- |
-| MGMT | gnmi | MGMT | send-time | acl1 | 6030 | false |
-| mytransport | - | - | send-time | acl1 | 6032 | false |
+| MGMT | gnmi | MGMT | send-time | acl1 | 6030 | False |
+| mytransport | - | - | send-time | acl1 | 6032 | False |
 | arTrue | - | - | send-time | acl1 | 6030 | True |
 | arFalse | - | - | send-time | acl1 | 6030 | False |
 
